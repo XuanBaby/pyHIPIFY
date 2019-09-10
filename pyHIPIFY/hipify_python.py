@@ -610,18 +610,18 @@ RE_ANGLE_HEADER = re.compile(r'#include <([^>]+)>')
 RE_THC_GENERIC_FILE = re.compile(r'#define THC_GENERIC_FILE "([^"]+)"')
 RE_CU_SUFFIX = re.compile(r'\.cu\b')  # be careful not to pick up .cuh
 
-def preprocessor(output_directory, filepath, stats, hip_clang_launch):
+
+def preprocessor(cuda_file, hip_file, stats, hip_clang_launch):
     """ Executes the CUDA -> HIP conversion on the specified file. """
-    fin_path = os.path.join(output_directory, filepath)
-    with open(fin_path, 'r') as fin:
+    with open(cuda_file, 'r') as fin:
         output_source = fin.read()
 
-    fout_path = os.path.join(output_directory, get_hip_file_path(filepath))
+    fout_path = hip_file
     if not os.path.exists(os.path.dirname(fout_path)):
         os.makedirs(os.path.dirname(fout_path))
 
     # unsupported_calls statistics reporting is broken atm
-    if is_pytorch_file(filepath):
+    if True: # is_pytorch_file(cuda_file)
         def pt_repl(m):
             return PYTORCH_MAP[m.group(0)]
         output_source = RE_PYTORCH_PREPROCESSOR.sub(pt_repl, output_source)
@@ -650,7 +650,7 @@ def preprocessor(output_directory, filepath, stats, hip_clang_launch):
     output_source = RE_THC_GENERIC_FILE.sub(mk_repl('#define THC_GENERIC_FILE "{0}"'), output_source)
 
     # CMakeLists.txt rewrites
-    if filepath.endswith('CMakeLists.txt'):
+    if cuda_file.endswith('CMakeLists.txt'):
         output_source = output_source.replace('CUDA', 'HIP')
         output_source = output_source.replace('THC', 'THH')
         output_source = RE_CU_SUFFIX.sub('.hip', output_source)
@@ -660,7 +660,7 @@ def preprocessor(output_directory, filepath, stats, hip_clang_launch):
         output_source = processKernelLaunches(output_source, stats)
 
     # Replace std:: with non-std:: versions
-    if filepath.endswith(".cu") or filepath.endswith(".cuh"):
+    if cuda_file.endswith(".cu") or cuda_file.endswith(".cuh"):
         output_source = replace_math_functions(output_source)
 
     # Include header if device code is contained.
