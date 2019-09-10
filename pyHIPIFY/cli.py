@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from pyHIPIFY import hipify_python
+from pyHIPIFY import hipify_python, is_hip_clang
 
 parser = argparse.ArgumentParser(description='Top-level script for HIPifying, filling in most common parameters')
 parser.add_argument(
@@ -65,16 +65,6 @@ for new_dir in args.include:
     if os.path.exists(abs_new_dir):
         new_dir = os.path.join(new_dir, '**/*')
         includes.append(new_dir)
-
-
-# Check if the compiler is hip-clang.
-def is_hip_clang():
-    try:
-        hip_path = os.getenv('HIP_PATH', '/opt/rocm/hip')
-        return 'HIP_COMPILER=clang' in open(hip_path + '/lib/.hipInfo').read()
-    except IOError:
-        return False
-
 
 hipify_python.hipify(
     project_directory=proj_dir,

@@ -43,6 +43,15 @@ PYTORCH_TEMPLATE_MAP = {"Dtype": "scalar_t", "T": "scalar_t"}
 CAFFE2_TEMPLATE_MAP = {}
 
 
+# Check if the compiler is hip-clang.
+def is_hip_clang():
+    try:
+        hip_path = os.getenv('HIP_PATH', '/opt/rocm/hip')
+        return 'HIP_COMPILER=clang' in open(hip_path + '/lib/.hipInfo').read()
+    except IOError:
+        return False
+
+
 class InputError(Exception):
     # Exception raised for errors in the input.
 
