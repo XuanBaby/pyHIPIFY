@@ -2271,10 +2271,10 @@ PYTORCH_SPECIFIC_MAPPINGS = collections.OrderedDict([
     ("cuda::CUDACachingAllocator::get", ("hip::HIPCachingAllocator::get", API_PYTORCH)),
     ("CUDACachingAllocator::get", ("HIPCachingAllocator::get", API_PYTORCH)),
     ("cuda::CUDACachingAllocator::recordStream", ("hip::HIPCachingAllocator::recordStream", API_PYTORCH)),
-    ("CUDACachingAllocator::recordStream", ("HIPCachingAllocator::recordStream", API_PYTORCH)),
+    ("CUDACachingAllocator::recordStream", ("HIPCachingAllocatorMasqueradingAsCUDA::recordStreamMasqueradingAsCUDA", API_PYTORCH)),
 
-    ("cuda::CUDAStream", ("hip::HIPStream", API_PYTORCH)),
-    ("CUDAStream", ("HIPStream", API_PYTORCH)),
+    ("cuda::CUDAStream", ("hip::HIPStreamMasqueradingAsCUDA", API_PYTORCH)),
+    ("CUDAStream", ("HIPStreamMasqueradingAsCUDA", API_PYTORCH)),
 
     ("cuda::getStreamFromPool", ("hip::getStreamFromPoolMasqueradingAsCUDA", API_PYTORCH)),
     ("getStreamFromPool", ("getStreamFromPoolMasqueradingAsCUDA", API_PYTORCH)),
@@ -2282,11 +2282,11 @@ PYTORCH_SPECIFIC_MAPPINGS = collections.OrderedDict([
     ("cuda::getDefaultCUDAStream", ("hip::getDefaultHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
     ("getDefaultCUDAStream", ("getDefaultHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
 
-    ("cuda::getCurrentCUDAStream", ("hip::getCurrentHIPStream", API_PYTORCH)),
-    ("getCurrentCUDAStream", ("getCurrentHIPStream", API_PYTORCH)),
+    ("cuda::getCurrentCUDAStream", ("hip::getCurrentHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
+    ("getCurrentCUDAStream", ("getCurrentHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
 
-    ("cuda::setCurrentCUDAStream", ("hip::setCurrentHIPStream", API_PYTORCH)),
-    ("setCurrentCUDAStream", ("setCurrentHIPStream", API_PYTORCH)),
+    ("cuda::setCurrentCUDAStream", ("hip::setCurrentHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
+    ("setCurrentCUDAStream", ("setCurrentHIPStreamMasqueradingAsCUDA", API_PYTORCH)),
 
     # TODO: Undo this special-case; see the header for motivation behind this
     # hack.  It's VERY important this is only applied to PyTorch HIPify.
